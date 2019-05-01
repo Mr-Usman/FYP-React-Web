@@ -1,0 +1,16 @@
+.NavContainer {
+  width: 100%;
+}
+.logo {
+  width: 30px;
+  height: 5px;
+  text-align: center;
+  float: left;
+}
+.NavBarColor {
+  color: green;
+}
+
+.FileContainer {
+  margin-top: 4rem;
+}
