@@ -109,13 +109,14 @@ class NavbarPage extends React.Component {
                       <MDBDropdownMenu className="dropdown-default" right>
                         <MDBDropdownItem
                           className={styles["NavBarColor"]}
-                          href="#!"
+                          onClick={() =>
+                            this.props.history.push("/accountinfo")
+                          }
                         >
                           Account Info
                         </MDBDropdownItem>
                         <MDBDropdownItem
                           className={styles["NavBarColor"]}
-                          href="#!"
                           onClick={this.logout}
                         >
                           Sign Out
@@ -128,16 +129,10 @@ class NavbarPage extends React.Component {
             </MDBNavbar>
           </header>
         </Router>
-        <div className={styles["FileContainer"]}>
-          <FileSection /> <br />
-        </div>
       </div>
     );
   }
 }
-// const mapStateToProps = state => {
-//   return {};
-// };
 
 const mapDispatchToProps = dispatch => {
   return {

@@ -1,4 +1,4 @@
-import { ADD_USER, LOGOUT, LOGIN } from "./actionTypes";
+import { ADD_USER, LOGOUT, LOGIN, TEXT_RESPONSE } from "./actionTypes";
 
 export const AddUser = () => {
   return dispatch => {
@@ -23,6 +23,15 @@ export const Login = payload => {
     localStorage.setItem("key", JSON.stringify(payload.key));
     dispatch({
       type: LOGIN,
+      payload
+    });
+  };
+};
+
+export const TextResponse = payload => {
+  return dispatch => {
+    dispatch({
+      type: TEXT_RESPONSE,
       payload
     });
   };

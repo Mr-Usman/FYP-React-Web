@@ -1,5 +1,22 @@
 .cs {
-    margin-block-start: 5%;
-    margin-left: 35%;
-
-	}
+  margin-block-start: 2%;
+  margin-left: 22%;
+  margin-top: 1%;
+}
+.imageContainer {
+  width: 25%;
+  height: 25%;
+  padding: 10px;
+  margin: 0 auto;
+  align-content: center;
+}
+.SML {
+  display: "inline-block";
+}
+.CAT {
+  margin-top: 10px;
+}
+.CAT:hover {
+  cursor: pointer;
+  color: #2bbbad;
+}

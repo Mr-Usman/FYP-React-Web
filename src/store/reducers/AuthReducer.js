@@ -20,10 +20,8 @@ const Auth = (state = UserToState, action) => {
       return {
         ...state,
         user: {
-          email: "",
           Loginstatus: false
-        },
-        key: ""
+        }
       };
     case LOGIN:
       return {

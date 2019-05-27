@@ -3,34 +3,52 @@ import {
   MDBBtn,
   MDBCard,
   MDBCardBody,
-  MDBCardImage,
   MDBCardTitle,
   MDBCardText,
   MDBCol,
   MDBContainer,
-  MDBRow
+  MDBRow,
+  MDBFileInput
 } from "mdbreact";
 import axios from "axios";
+import { IMAGE } from "../../../API_ENDPOINTS";
+import FormData from "form-data";
+import { connect } from "react-redux";
+import { TextResponse } from "../../../store/actions/actionCreators";
+import { withRouter } from "react-router-dom";
 
 class FileSection extends Component {
   state = {
-    selectImage: false,
-    images: [],
-    message: ""
+    selectedFile: null,
+    filename: ""
   };
 
-  selectedImages = event => {
-    let images = [];
-    for (var i = 0; i < event.target.files.length; i++) {
-      images[i] = event.target.files.item(i);
-    }
-    images = images.filter(image => image.name.match(/\.(jpg|jpeg|png|gif)$/));
-    let message = `${images.length} valid image(s) selected`;
+  onChange = e => {
+    const selectedFile = e.target.files[0];
+    const filename = e.target.files[0].name;
     this.setState(() => ({
-      images,
-      message,
-      selectImage: true
+      selectedFile,
+      filename
     }));
+  };
+
+  upload = async e => {
+    e.preventDefault();
+    try {
+      let formData = new FormData();
+      formData.append("pic", this.state.selectedFile);
+      var headers = {
+        Accept: "application/json, text/plain, */*",
+        Authorization: "Token " + JSON.parse(localStorage.getItem("key"))
+      };
+      const res = await axios.post(IMAGE, formData, { headers: headers });
+      this.props.TextResponse(res.data);
+      if (this.props.successful === true) {
+        this.props.history.push("/editor");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   render() {
@@ -48,9 +66,9 @@ class FileSection extends Component {
                         <div className="custom-file">
                           <input
                             type="file"
-                            onChange={this.selectedImages}
+                            onChange={this.onChange}
                             className="custom-file-input"
-                            name="file"
+                            name="myImage"
                             aria-describedby="inputGroupFileAddon01"
                             multiple
                           />
@@ -58,7 +76,7 @@ class FileSection extends Component {
                             className="custom-file-label"
                             htmlFor="inputGroupFile01"
                           >
-                            Choose file
+                            {this.state.filename}
                           </label>
                         </div>
                       </div>
@@ -84,4 +102,19 @@ class FileSection extends Component {
   }
 }
 
-export default FileSection;
+const mapDispatchToState = state => {
+  return {
+    successful: state.text.successful
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    TextResponse: payload => dispatch(TextResponse(payload))
+  };
+};
+
+export default connect(
+  mapDispatchToState,
+  mapDispatchToProps
+)(withRouter(FileSection));

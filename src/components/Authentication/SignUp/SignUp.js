@@ -74,48 +74,26 @@ class SignUp extends Component {
       successful: nextProps.successful
     }));
   }
-
-  responseFacebook = async response => {
-    const facebookurl = FACEBOOK_LOGIN;
-    try {
-      let response = await axios.post(facebookurl);
-      console.log(response.data);
-    } catch (error) {
-      console.log(error.response.data);
-    }
-    // this.setState({
-    //   display: false,
-    //   isLoggedin: true,
-    //   userID: response.userID,
-    //   userName: response.userName,
-    //   userEmail: response.userEmail,
-    //   Picture: response.picture.data.url
-    // });
-  };
-
-  responseGoogle = response => {};
-
-  // componentDidMount() {
-  //   console.log(this.props.history);
-  // }
-
   render() {
     const { errors } = this.state;
     const { user } = this.props.auth;
     return (
       <div className={styles["cop"]}>
-        <MDBContainer>
+        <MDBContainer fluid>
           <MDBRow>
-            <MDBCol md="7">
+            <MDBCol md="6" sm="6">
               <MDBCard>
                 <MDBCardBody>
+                  <div className={styles["imageContainer"]}>
+                    <img
+                      src={require("../../../assets/logo.png")}
+                      className="img-fluid"
+                    />
+                  </div>
                   <form onSubmit={this.handleSubmit}>
-                    <p className="h4 text-center py-4">Sign up</p>
-                    {/* {user.email} */}
                     <div className="grey-text">
                       <MDBInput
                         label="User Name"
-                        icon="user"
                         group
                         type="text"
                         name="username"
@@ -130,7 +108,6 @@ class SignUp extends Component {
 
                       <MDBInput
                         label="email"
-                        icon="envelope"
                         group
                         name="email"
                         type="email"
@@ -144,7 +121,6 @@ class SignUp extends Component {
                       )}
                       <MDBInput
                         label="password"
-                        icon="lock"
                         name="password1"
                         group
                         type="password"
@@ -156,7 +132,6 @@ class SignUp extends Component {
                       )}
                       <MDBInput
                         label="Confirm password"
-                        icon="exclamation-triangle"
                         group
                         type="password"
                         name="password2"
@@ -171,20 +146,6 @@ class SignUp extends Component {
                       {errors.errorsObj.matchedPassword && (
                         <p>{errors.errorsObj.matchedPassword["message"]}</p>
                       )}
-                    </div>
-                    <div>
-                      <FacebookLogin
-                        appId="265312887692042"
-                        fields="name,email,picture"
-                        callback={this.responseFacebook}
-                      />
-                      <br /> <br />
-                      <GoogleLogin
-                        clientId="644499667625-cvfkcrajmoh0cdbs0f8a5pj5390fisi7.apps.googleusercontent.com" //CLIENTID NOT CREATED YET
-                        buttonText="LOGIN WITH GOOGLE"
-                        onSuccess={this.responseGoogle}
-                        onFailure={this.responseGoogle}
-                      />
                     </div>
                     <div className="text-center py-4 mt-3">
                       <MDBBtn color="cyan" type="submit">
