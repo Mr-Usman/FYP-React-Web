@@ -1,4 +1,4 @@
-import { ADD_USER, LOGOUT, LOGIN, TEXT_RESPONSE } from "./actionTypes";
+import { ADD_USER, LOGOUT, LOGIN, TEXT_RESPONSE, IMAGE } from "./actionTypes";
 
 export const AddUser = () => {
   return dispatch => {
@@ -32,6 +32,15 @@ export const TextResponse = payload => {
   return dispatch => {
     dispatch({
       type: TEXT_RESPONSE,
+      payload
+    });
+  };
+};
+
+export const displayImage = payload => {
+  return dispatch => {
+    dispatch({
+      type: IMAGE,
       payload
     });
   };

@@ -14,7 +14,10 @@ import axios from "axios";
 import { IMAGE } from "../../../API_ENDPOINTS";
 import FormData from "form-data";
 import { connect } from "react-redux";
-import { TextResponse } from "../../../store/actions/actionCreators";
+import {
+  TextResponse,
+  displayImage
+} from "../../../store/actions/actionCreators";
 import { withRouter } from "react-router-dom";
 
 class FileSection extends Component {
@@ -24,12 +27,23 @@ class FileSection extends Component {
   };
 
   onChange = e => {
-    const selectedFile = e.target.files[0];
+    // const selectedFile = e.target.files[0];
+    // const filename = e.target.files[0].name;
+    // this.setState(() => ({
+    //   selectedFile,
+    //   filename
+    // }));
+    let reader = new FileReader();
+    let file = e.target.files[0];
     const filename = e.target.files[0].name;
-    this.setState(() => ({
-      selectedFile,
-      filename
-    }));
+    reader.onloadend = () => {
+      this.setState({
+        selectedFile: file,
+        filename
+      });
+    };
+    reader.readAsDataURL(file);
+    this.props.displayImage(file);
   };
 
   upload = async e => {
@@ -104,13 +118,15 @@ class FileSection extends Component {
 
 const mapDispatchToState = state => {
   return {
-    successful: state.text.successful
+    successful: state.text.successful,
+    image: state.text.image
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    TextResponse: payload => dispatch(TextResponse(payload))
+    TextResponse: payload => dispatch(TextResponse(payload)),
+    displayImage: payload => dispatch(displayImage(payload))
   };
 };
 

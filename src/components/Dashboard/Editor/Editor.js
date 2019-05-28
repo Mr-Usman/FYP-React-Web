@@ -22,14 +22,6 @@ class EditFile extends Component {
     textData: this.props.TextResponse
   };
 
-  // componentWillReceiveProps(nextProps) {
-  //   console.log("componentWillReceiveProps", nextProps);
-  //   this.setState({
-  //     textData: this.props.TextResponse
-  //   });
-  //   console.log(this.state.textData);
-  // }
-
   exportPdf = e => {
     e.preventDefault();
     const input = this.state.textData;
@@ -83,7 +75,11 @@ class EditFile extends Component {
               <MDBCard style={{ width: "100%", marginTop: 38 }}>
                 <MDBCardBody>
                   <MDBCardTitle>Preview an Image</MDBCardTitle>
-                  <MDBCardText />
+                  <img
+                    src={this.props.displayImage}
+                    style={{ width: 300, height: 350 }}
+                    className="img-fluid"
+                  />
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
@@ -95,7 +91,8 @@ class EditFile extends Component {
 }
 const mapStateToProps = state => {
   return {
-    TextResponse: state.text.textData
+    TextResponse: state.text.textData,
+    displayImage: state.text.image
   };
 };
 const mapDispatchToProps = dispatch => {

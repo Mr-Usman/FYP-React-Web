@@ -1,8 +1,9 @@
-import { TEXT_RESPONSE } from "../actions/actionTypes";
+import { TEXT_RESPONSE, IMAGE } from "../actions/actionTypes";
 
 const initialState = {
   textData: "",
-  successful: false
+  successful: false,
+  image: null
 };
 
 const Text = (state = initialState, action) => {
@@ -12,6 +13,13 @@ const Text = (state = initialState, action) => {
         ...state,
         textData: action.payload,
         successful: true
+      };
+    case IMAGE:
+      let image = URL.createObjectURL(action.payload);
+      let reader = new FileReader();
+      return {
+        ...state,
+        image
       };
     default:
       return state;
