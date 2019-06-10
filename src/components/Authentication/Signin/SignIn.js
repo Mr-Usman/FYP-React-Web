@@ -11,6 +11,7 @@ import {
 import styles from "../Signin/SignIn.module.css";
 import { LOGIN, FACEBOOK_LOGIN } from "../../../API_ENDPOINTS";
 import { Login } from "../../../store/actions/actionCreators";
+import validateLoginInput from "./validatelogin";
 import { withRouter } from "react-router-dom";
 import FacebookLogin from "react-facebook-login";
 import GoogleLogin from "react-google-login";
@@ -27,7 +28,9 @@ class SignIn extends Component {
     },
     error: {
       message: null
-    }
+    },
+    emailError: "",
+    passwordError: ""
   };
 
   handleChange = event => {
@@ -39,6 +42,18 @@ class SignIn extends Component {
   onSubmit = async e => {
     e.preventDefault();
     const { email, password, loginStatus } = this.state;
+    const { errorsObject, isValid } = validateLoginInput({
+      email,
+      password
+    });
+    if (!isValid) {
+      this.setState(() => ({
+        emailError: errorsObject.email,
+        passwordError: errorsObject.password
+      }));
+      return;
+    }
+
     try {
       let response = await axios.post(url, { email, password });
       console.log(response.data);
@@ -99,6 +114,7 @@ class SignIn extends Component {
   };
 
   render() {
+    const { emailError, passwordError } = this.state;
     return (
       <div className={styles["cs"]}>
         <MDBContainer fluid>
@@ -124,6 +140,9 @@ class SignIn extends Component {
                         error="wrong"
                         success="right"
                       />
+                      {emailError && (
+                        <p style={{ color: "red" }}>{emailError}</p>
+                      )}
                       <MDBInput
                         label="password"
                         onChange={this.handleChange}
@@ -132,6 +151,9 @@ class SignIn extends Component {
                         type="password"
                         validate
                       />
+                      {passwordError && (
+                        <p style={{ color: "red" }}>{passwordError}</p>
+                      )}
                     </div>
                     {this.state.error.message && (
                       <div style={{ textAlign: "center" }}>
@@ -158,7 +180,7 @@ class SignIn extends Component {
                     </div>
                   </form>
                   <hr />
-                  <div className={styles["SML"]}>
+                  {/* <div className={styles["SML"]}>
                     <FacebookLogin
                       appId="265312887692042"
                       fields="name,email,picture"
@@ -171,7 +193,7 @@ class SignIn extends Component {
                       onSuccess={this.responseGoogle}
                       onFailure={this.responseGoogle}
                     />
-                  </div>
+                  </div> */}
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>

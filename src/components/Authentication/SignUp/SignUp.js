@@ -11,7 +11,7 @@ import {
 import FacebookLogin from "react-facebook-login";
 import GoogleLogin from "react-google-login";
 import styles from "../SignUp/SignUp.module.css";
-import validationForm from "./Helper";
+import validationRegisterInput from "./validationRegistration";
 import axios from "axios";
 import { REGISTRATION, FACEBOOK_LOGIN } from "../../../API_ENDPOINTS";
 
@@ -28,11 +28,10 @@ class SignUp extends Component {
     password2: "",
     successful: false,
     loginStatus: false,
-    errors: {
-      hasError: false,
-      errorsObj: {},
-      serverError: ""
-    }
+    userError: "",
+    emailError: "",
+    password1Error: "",
+    password2Error: ""
   };
 
   handleChange = event => {
@@ -44,18 +43,34 @@ class SignUp extends Component {
   handleSubmit = async event => {
     event.preventDefault();
     const { username, email, password1, password2, errors } = this.state;
-    const validate = validationForm("all", {
+    const { errorsObject, isValid } = validationRegisterInput({
       username,
       email,
       password1,
       password2
     });
-    if (validate.hasError) {
-      this.setState({
-        errors: validate
-      });
+    if (!isValid) {
+      this.setState(() => ({
+        userError: errorsObject.username,
+        emailError: errorsObject.email,
+        password1Error: errorsObject.password1,
+        password2Error: errorsObject.password2
+      }));
       return;
     }
+    // const validate = validationForm("all", {
+    //   username,
+    //   email,
+    //   password1,
+    //   password2
+    // });
+    // if (validate.hasError) {
+    //   this.setState({
+    //     errors: validate
+    //   });
+    //   return;
+    // }
+
     const url = REGISTRATION;
     try {
       let response = await axios.post(url, { ...this.state });
@@ -75,7 +90,12 @@ class SignUp extends Component {
     }));
   }
   render() {
-    const { errors } = this.state;
+    const {
+      userError,
+      emailError,
+      password1Error,
+      password2Error
+    } = this.state;
     const { user } = this.props.auth;
     return (
       <div className={styles["cop"]}>
@@ -102,9 +122,7 @@ class SignUp extends Component {
                         success="right"
                         onChange={this.handleChange}
                       />
-                      {errors.errorsObj.username && (
-                        <p>{errors.errorsObj.username["message"]}</p>
-                      )}
+                      {userError && <p style={{ color: "red" }}>{userError}</p>}
 
                       <MDBInput
                         label="email"
@@ -116,8 +134,8 @@ class SignUp extends Component {
                         success="right"
                         onChange={this.handleChange}
                       />
-                      {errors.errorsObj.email && (
-                        <p>{errors.errorsObj.email["message"]}</p>
+                      {emailError && (
+                        <p style={{ color: "red" }}>{emailError}</p>
                       )}
                       <MDBInput
                         label="password"
@@ -127,8 +145,8 @@ class SignUp extends Component {
                         validate
                         onChange={this.handleChange}
                       />
-                      {errors.errorsObj.password && (
-                        <p>{errors.errorsObj.password["message"]}</p>
+                      {password1Error && (
+                        <p style={{ color: "red" }}>{password1Error}</p>
                       )}
                       <MDBInput
                         label="Confirm password"
@@ -140,11 +158,8 @@ class SignUp extends Component {
                         success="right"
                         onChange={this.handleChange}
                       />
-                      {errors.errorsObj.confirmPassword && (
-                        <p>{errors.errorsObj.confirmPassword["message"]}</p>
-                      )}
-                      {errors.errorsObj.matchedPassword && (
-                        <p>{errors.errorsObj.matchedPassword["message"]}</p>
+                      {password2Error && (
+                        <p style={{ color: "red" }}>{password2Error}</p>
                       )}
                     </div>
                     <div className="text-center py-4 mt-3">
