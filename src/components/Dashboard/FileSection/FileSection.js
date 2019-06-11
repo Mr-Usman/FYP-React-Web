@@ -14,6 +14,7 @@ import axios from "axios";
 import { IMAGE } from "../../../API_ENDPOINTS";
 import FormData from "form-data";
 import { connect } from "react-redux";
+import Spinner from "react-spinner-material";
 import {
   TextResponse,
   displayImage
@@ -23,7 +24,8 @@ import { withRouter } from "react-router-dom";
 class FileSection extends Component {
   state = {
     selectedFile: null,
-    filename: ""
+    filename: "",
+    loading: false
   };
 
   onChange = e => {
@@ -48,6 +50,9 @@ class FileSection extends Component {
 
   upload = async e => {
     e.preventDefault();
+    this.setState(() => ({
+      loading: true
+    }));
     try {
       let formData = new FormData();
       formData.append("pic", this.state.selectedFile);
@@ -104,7 +109,40 @@ class FileSection extends Component {
                         </div>
                       )}
                     </MDBCardText>
-                    <MDBBtn type="submit">Upload</MDBBtn>
+                    <div>
+                      <div style={{ display: "inline-block" }}>
+                        <MDBBtn type="submit">Upload</MDBBtn>
+                      </div>
+                      {this.state.loading && (
+                        <div
+                          style={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <div
+                            style={{
+                              display: "inline-block",
+                              marginLeft: "10px"
+                            }}
+                          >
+                            <Spinner
+                              size={20}
+                              spinnerColor={"#2bbbad"}
+                              spinnerWidth={1}
+                              visible={true}
+                            />
+                          </div>
+                          <div
+                            style={{
+                              display: "inline-block",
+                              marginLeft: "5px"
+                            }}
+                          >
+                            <p style={{ color: "#2bbbad" }}>
+                              please wait, result is generating
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </form>
                 </MDBCardBody>
               </MDBCard>

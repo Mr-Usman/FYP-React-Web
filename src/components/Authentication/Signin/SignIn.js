@@ -10,14 +10,20 @@ import {
 } from "mdbreact";
 import styles from "../Signin/SignIn.module.css";
 import { LOGIN, FACEBOOK_LOGIN } from "../../../API_ENDPOINTS";
-import { Login } from "../../../store/actions/actionCreators";
+import { Login, Facebook, Google } from "../../../store/actions/actionCreators";
 import validateLoginInput from "./validatelogin";
 import { withRouter } from "react-router-dom";
+import Spinner from "react-spinner-material";
 import FacebookLogin from "react-facebook-login";
 import GoogleLogin from "react-google-login";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFacebookF, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import axios from "axios";
 import { connect } from "react-redux";
 const url = LOGIN;
+
+library.add(faFacebookF, faFacebook);
 
 class SignIn extends Component {
   state = {
@@ -30,7 +36,8 @@ class SignIn extends Component {
       message: null
     },
     emailError: "",
-    passwordError: ""
+    passwordError: "",
+    loading: false
   };
 
   handleChange = event => {
@@ -41,6 +48,9 @@ class SignIn extends Component {
 
   onSubmit = async e => {
     e.preventDefault();
+    this.setState(() => ({
+      loading: true
+    }));
     const { email, password, loginStatus } = this.state;
     const { errorsObject, isValid } = validateLoginInput({
       email,
@@ -49,7 +59,8 @@ class SignIn extends Component {
     if (!isValid) {
       this.setState(() => ({
         emailError: errorsObject.email,
-        passwordError: errorsObject.password
+        passwordError: errorsObject.password,
+        loading: false
       }));
       return;
     }
@@ -72,6 +83,7 @@ class SignIn extends Component {
     } catch (error) {
       // console.log(error.response.data.non_field_errors[0]);
       this.setState(() => ({
+        loading: false,
         error: {
           message: error.response.data.non_field_errors[0]
         }
@@ -84,7 +96,6 @@ class SignIn extends Component {
     this.setState(() => ({
       loginStatus: nextProps.loginStatus
     }));
-    console.log(this.state.user.loginStatus);
   }
 
   componentWillMount() {
@@ -94,7 +105,7 @@ class SignIn extends Component {
     }
   }
 
-  responseFacebook = async res => {
+  SocialSignUpWithFacebook = async res => {
     const facebookurl = FACEBOOK_LOGIN;
     try {
       let response = await axios.post(facebookurl, {
@@ -102,19 +113,36 @@ class SignIn extends Component {
       });
       console.log(response.data);
       console.log(res);
+      const name = res.name;
+      const email = res.email;
+      const key = response.data;
+      const payload = { name, email, key, loginStatus: true };
+      localStorage.removeItem("key");
+      this.props.facebook(payload);
+      this.props.history.push("/");
     } catch (error) {
       console.log(error.response.data);
     }
   };
-
-  responseGoogle = response => {
-    const name = response.profileObj.name;
-    const email = response.profileObj.email;
-    const access_token = response.Zi.access_token;
+  SocialSignUpWithGoogle = res => {
+    console.log(res);
+    const name = res.profileObj.name;
+    const email = res.profileObj.email;
+    const key = res.accessToken;
+    const payload = { name, email, key, loginStatus: true };
+    localStorage.removeItem("key");
+    this.props.google(payload);
+    this.props.history.push("/");
   };
+  // responseGoogle = response => {
+  //   const name = response.profileObj.name;
+  //   const email = response.profileObj.email;
+  //   const access_token = response.Zi.access_token;
+  // };
 
   render() {
     const { emailError, passwordError } = this.state;
+    const element = <FontAwesomeIcon icon={faFacebook} />;
     return (
       <div className={styles["cs"]}>
         <MDBContainer fluid>
@@ -157,14 +185,33 @@ class SignIn extends Component {
                     </div>
                     {this.state.error.message && (
                       <div style={{ textAlign: "center" }}>
-                        <p style={{ color: "red" }}>
+                        <p style={{ color: "#2bbbad" }}>
                           {this.state.error.message}
                         </p>
                       </div>
                     )}
+
                     <div className="text-center">
                       <MDBBtn type="submit">Sign In</MDBBtn>
                     </div>
+                    {this.state.loading && (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center"
+                        }}
+                      >
+                        <Spinner
+                          size={20}
+                          spinnerColor={"#2bbbad"}
+                          spinnerWidth={1}
+                          visible={true}
+                        />
+                        &nbsp;&nbsp;
+                        <div style={{ color: "#2bbbad" }}>please wait ...</div>
+                      </div>
+                    )}
                     <div
                       style={{
                         display: "inline",
@@ -180,20 +227,34 @@ class SignIn extends Component {
                     </div>
                   </form>
                   <hr />
-                  {/* <div className={styles["SML"]}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      flexDirection: "row",
+                      justifyContent: "space-between"
+                    }}
+                  >
                     <FacebookLogin
                       appId="265312887692042"
+                      autoLoad={false}
                       fields="name,email,picture"
+                      callback={this.SocialSignUpWithFacebook}
+                      cssClass={styles["btnFacebook"]}
+                      icon={
+                        <i className={element} style={{ marginLeft: "5px" }} />
+                      }
                       textButton="&nbsp;&nbsp;Sign In with Facebook"
-                      callback={this.responseFacebook}
                     />
+
                     <GoogleLogin
                       clientId="644499667625-cvfkcrajmoh0cdbs0f8a5pj5390fisi7.apps.googleusercontent.com"
-                      buttonText="LOGIN WITH GOOGLE"
-                      onSuccess={this.responseGoogle}
-                      onFailure={this.responseGoogle}
-                    />
-                  </div> */}
+                      onSuccess={this.SocialSignUpWithGoogle}
+                      onFailure={this.SocialSignUpWithGoogle}
+                    >
+                      <span>&nbsp;&nbsp;Sign In with Google</span>
+                    </GoogleLogin>
+                  </div>
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
@@ -212,7 +273,9 @@ const mapDispatchToState = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    Login: payload => dispatch(Login(payload))
+    Login: payload => dispatch(Login(payload)),
+    facebook: payload => dispatch(Facebook(payload)),
+    google: payload => dispatch(Google(payload))
   };
 };
 

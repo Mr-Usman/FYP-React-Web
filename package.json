@@ -4,6 +4,8 @@
   "private": true,
   "// If You want to install mdbreact from our GitLab repository, please replace '4.11.0' with gitURL provided here ->": "git+https://oauth2:<YOUR-TOKEN-GOES-HERE>@git.mdbootstrap.com/mdb/react/re-pro.git",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@fortawesome/free-brands-svg-icons": "^5.9.0",
     "@fortawesome/react-fontawesome": "^0.1.4",
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
@@ -24,6 +26,7 @@
     "react-redux": "^7.0.2",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.0.5",
+    "react-spinner-material": "^1.1.1",
     "react-tinymce": "^0.7.0",
     "redux": "^4.0.1",
     "redux-logger": "^3.0.6",

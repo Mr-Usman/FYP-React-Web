@@ -1,7 +1,14 @@
-import { ADD_USER, LOGOUT, LOGIN } from "../actions/actionTypes";
+import {
+  ADD_USER,
+  LOGOUT,
+  LOGIN,
+  FACEBOOK_LOGIN,
+  GOOGLE_LOGIN
+} from "../actions/actionTypes";
 
 const UserToState = {
   user: {
+    name: "",
     email: "",
     Loginstatus: false
   },
@@ -29,6 +36,24 @@ const Auth = (state = UserToState, action) => {
         user: {
           email: action.payload.email,
           Loginstatus: action.payload.loginStatus
+        },
+        key: action.payload.key
+      };
+    case FACEBOOK_LOGIN:
+      return {
+        ...state,
+        user: {
+          name: action.payload.name,
+          email: action.payload.email
+        },
+        key: action.payload.key
+      };
+    case GOOGLE_LOGIN:
+      return {
+        ...state,
+        user: {
+          name: action.payload.name,
+          email: action.payload.email
         },
         key: action.payload.key
       };

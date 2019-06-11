@@ -3,6 +3,7 @@ export const REGISTRATION =
 export const LOGIN = "https://pentooscan.herokuapp.com/rest-auth/login/";
 export const FACEBOOK_LOGIN =
   "https://pentooscan.herokuapp.com/rest-auth/facebook/";
+export const GOOGLE_LOGIN = "https://pentooscan.herokuapp.com/accounts/google";
 export const CHANGE_PASSWORD =
   "https://pentooscan.herokuapp.com/rest-auth/password/change/";
 export const RESET_PASSWORD =
