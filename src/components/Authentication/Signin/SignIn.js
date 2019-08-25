@@ -21,6 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebookF, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import axios from "axios";
 import { connect } from "react-redux";
+import { GOOGLE_LOGIN } from "../../../store/actions/actionTypes";
 const url = LOGIN;
 
 library.add(faFacebookF, faFacebook);
@@ -29,9 +30,7 @@ class SignIn extends Component {
   state = {
     email: "",
     password: "",
-    user: {
-      loginStatus: false
-    },
+    loginStatus: false,
     error: {
       message: null
     },
@@ -48,9 +47,9 @@ class SignIn extends Component {
 
   onSubmit = async e => {
     e.preventDefault();
-    this.setState(() => ({
+    this.setState({
       loading: true
-    }));
+    });
     const { email, password, loginStatus } = this.state;
     const { errorsObject, isValid } = validateLoginInput({
       email,
@@ -92,7 +91,7 @@ class SignIn extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { loginStatus } = this.state.user;
+    const { loginStatus } = this.state;
     this.setState(() => ({
       loginStatus: nextProps.loginStatus
     }));
@@ -106,9 +105,9 @@ class SignIn extends Component {
   }
 
   SocialSignUpWithFacebook = async res => {
-    const facebookurl = FACEBOOK_LOGIN;
+    const facebookUrl = FACEBOOK_LOGIN;
     try {
-      let response = await axios.post(facebookurl, {
+      let response = await axios.post(facebookUrl, {
         access_token: res.accessToken
       });
       console.log(response.data);
@@ -124,21 +123,18 @@ class SignIn extends Component {
       console.log(error.response.data);
     }
   };
-  SocialSignUpWithGoogle = res => {
-    console.log(res);
-    const name = res.profileObj.name;
-    const email = res.profileObj.email;
-    const key = res.accessToken;
-    const payload = { name, email, key, loginStatus: true };
-    localStorage.removeItem("key");
-    this.props.google(payload);
-    this.props.history.push("/");
+  SocialSignUpWithGoogle = async res => {
+    const googleUrl = GOOGLE_LOGIN;
+    try {
+      let response = await axios.post(googleUrl, {
+        access_token: res.accessToken
+      });
+      console.log(response.data);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
-  // responseGoogle = response => {
-  //   const name = response.profileObj.name;
-  //   const email = response.profileObj.email;
-  //   const access_token = response.Zi.access_token;
-  // };
 
   render() {
     const { emailError, passwordError } = this.state;
