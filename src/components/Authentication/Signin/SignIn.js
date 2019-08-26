@@ -123,17 +123,27 @@ class SignIn extends Component {
       console.log(error.response.data);
     }
   };
+
   SocialSignUpWithGoogle = async res => {
     const googleUrl = GOOGLE_LOGIN;
+    // localStorage.removeItem("key");
+    // localStorage.setItem("key", res.accessToken);
+    // console.log(res.accessToken);
     try {
       let response = await axios.post(googleUrl, {
         access_token: res.accessToken
       });
-      console.log(response.data);
-      console.log(res);
+      console.log(response);
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
     }
+    // const name = res.profileObj.name;
+    // const email = res.profileObj.email;
+    // const key = res.accessToken;
+    // const payload = { name, email, key, loginStatus: true };
+    // localStorage.removeItem("key");
+    // this.props.google(payload);
+    // this.props.history.push("/");
   };
 
   render() {

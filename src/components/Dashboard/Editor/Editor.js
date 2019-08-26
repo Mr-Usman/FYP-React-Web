@@ -53,16 +53,15 @@ class EditFile extends Component {
               <form onSubmit={this.exportPdf}>
                 <div className="E-Container">
                   <Editor
+                    apiKey="gvz9qgjqz9ke1r5j2k3exubmbhrywvohg6vtc3jzzf3cbx61"
                     initialValue={this.props.TextResponse}
                     onEditorChange={this.textUpdated}
                     init={{
                       powerpaste_allow_local_images: true,
-                      plugins: "link image code",
+                      plugins: "save",
                       toolbar:
                         "save | undo redo | bold italic | alignleft aligncenter alignright | code",
-                      height: "480",
-                      paste_as_text: true,
-                      plugins: "paste"
+                      height: "480"
                     }}
                   />
                   <div className="text-right" style={{ marginTop: 20 }}>

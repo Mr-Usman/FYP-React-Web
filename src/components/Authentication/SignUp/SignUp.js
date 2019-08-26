@@ -29,6 +29,7 @@ class SignUp extends Component {
     successful: false,
     loginStatus: false,
     userError: "",
+    alreadyRegistered: "",
     emailError: "",
     password1Error: "",
     password2Error: ""
@@ -74,13 +75,15 @@ class SignUp extends Component {
     const url = REGISTRATION;
     try {
       let response = await axios.post(url, { ...this.state });
-      console.log(response.data);
       this.props.AddUser();
       this.props.successful === true
         ? this.props.history.push("/signin")
         : this.props.history.push("/signup");
     } catch (error) {
-      console.log(error.response.data);
+      this.setState(() => ({
+        alreadyRegistered: error.response.data.email[0]
+      }));
+      // console.log(error.response.data.email[0]);
     }
   };
 
@@ -94,7 +97,8 @@ class SignUp extends Component {
       userError,
       emailError,
       password1Error,
-      password2Error
+      password2Error,
+      alreadyRegistered
     } = this.state;
     const { user } = this.props.auth;
     return (
@@ -136,6 +140,9 @@ class SignUp extends Component {
                       />
                       {emailError && (
                         <p style={{ color: "red" }}>{emailError}</p>
+                      )}
+                      {alreadyRegistered && (
+                        <p style={{ color: "red" }}>{alreadyRegistered}</p>
                       )}
                       <MDBInput
                         label="password"
